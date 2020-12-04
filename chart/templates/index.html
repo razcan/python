@@ -145,15 +145,7 @@ new Chart(document.getElementById("line-chart"), {
 </script>
 
 {% block includes %}
-
-{% comment %} <ul> 
-{% for result in myresult %} 
-    <li>{{ result.Id }}</li> 
-{% endfor %} 
-</ul>  {% endcomment %}
-
-{{ args }}
-
+{{ myresult }}
 {% endblock includes %}
 
 

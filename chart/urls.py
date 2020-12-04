@@ -6,7 +6,7 @@ from chart import *
 
 urlpatterns = [
     path('', views.index, name='index'),
-    path('gigi', views.read_from_mysql, name='read_from_mysql'),
+    path('gigi', views.read_from_mysql, name='index'),
 ]
 
 #read_serial_data()

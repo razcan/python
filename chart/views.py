@@ -26,12 +26,15 @@ def read_from_mysql(request, template_name="index.html"):
         )
 
      mycursor = mydb.cursor()   
-     mycursor.execute("SELECT * FROM Logs")
+     mycursor.execute("SELECT * FROM chart_info")
      myresult = mycursor.fetchall()
      print(myresult)
      args = {}
-     args['mytext'] = "text"
-     return TemplateResponse(request, template_name, args)
+     text = "hello world"
+     args['mytext'] = text   
+     return TemplateResponse(request, template_name, {"myresult":myresult})
+
+
 
 def read_data(request):
     text_res = "hello comanda executata"
