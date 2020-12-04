@@ -3,6 +3,9 @@ from django.shortcuts import render
 from django.http import HttpResponse
 import mysql.connector
 from mysql.connector import errorcode
+from django.db import models
+from chart.models import *
+
 # from django.template import loader
 
 # def index(request):
@@ -18,34 +21,40 @@ def index(request, template_name="index.html"):
     return TemplateResponse(request, template_name, args)
 
 def read_from_mysql(request, template_name="index.html"):
-     mydb = mysql.connector.connect(
-        host="localhost",
-        user="admin",
-        password="vasilica",
-        database="RZC"
-        )
+    #  mydb = mysql.connector.connect(
+    #     host="localhost",
+    #     user="admin",
+    #     password="vasilica",
+    #     database="RZC"
+    #     )
 
-     mycursor = mydb.cursor()   
-     mycursor.execute("SELECT * FROM chart_info")
-     myresult = mycursor.fetchall()
-     print(myresult)
-     args = {}
-     text = "hello world"
-     args['mytext'] = text   
-     return TemplateResponse(request, template_name, {"myresult":myresult})
+    #  mycursor = mydb.cursor()   
+    #  mycursor.execute("SELECT * FROM chart_info")
+     #myresult = mycursor.fetchall()
+     #print(myresult)
+    #  args = {}
+    #  text = "hello world"
+    #  args['mytext'] = text
+     #Reserved.objects.filter(client=client_id).order_by('-check_in')
+     #myresult = list(Info.objects.all())  
+     labels = []
+     data = []
+     queryset = Info.objects.filter().order_by('-id')[:10]
+     myresult = Info.objects.filter().order_by('-id')[:10]
+     for measure in queryset:
+        labels.append(measure.id)
+        data.append(measure.distance)
+     
+     print(labels)
+     print(data)
 
-
+     return TemplateResponse(request, template_name, {
+        "myresult" : myresult,
+        "labels" : labels,
+        "data": data,
+                                                     })
 
 def read_data(request):
     text_res = "hello comanda executata"
     print(text_res)
     return render(request,"index.html",{'text_res': text_res})
-    
-    # # import function to run
-    # from path_to_script import function_to_run
-
-    # # call function
-    # function_to_run() 
-
-    # # return user to required page
-    # return HttpResponseRedirect(reverse(app_name:view_name)
