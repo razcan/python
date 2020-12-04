@@ -1,0 +1,1 @@
+#default_app_config = 'chart.read_serial_data.MyAppConfig'
