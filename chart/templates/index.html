@@ -15,7 +15,10 @@
 <body>
 
  {% csrf_token %}
-    <button type="submit" name="run_script">Run script</button>
+
+  <form action='read_data' method='GET'>
+    <button type='submit'> Start Reading</button>
+  </form>
 
 
 <div class="container">
@@ -34,7 +37,9 @@
          <div class="col-md-6">
                 <table class="table">
                 <caption>Numeric values:</caption>
-                <thead>
+                <thead<form action='actionUrl' method='GET'>
+<button type='submit'> sort me</button>
+</form>>
                     <tr>
                     <th scope="col">Id</th>
                     <th scope="col">Distance</th>
@@ -81,6 +86,7 @@ new Chart(document.getElementById("line-chart"), {
 </script>
 {% endblock %}
 
+{% comment %} 
 {% block includes %}
 
 {% for res in myresult %}
@@ -90,7 +96,7 @@ new Chart(document.getElementById("line-chart"), {
     <br>
 {% endfor %}
 
-{% endblock includes %}
+{% endblock includes %} {% endcomment %}
 
 
 </body>

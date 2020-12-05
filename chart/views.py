@@ -1,18 +1,19 @@
 from django.shortcuts import render 
-# #render_to_response
 from django.http import HttpResponse
 import mysql.connector
+import serial
+import time
 from mysql.connector import errorcode
 from django.db import models
 from chart.models import *
-
-# from django.template import loader
-
-# def index(request):
-#     return render(request,'index.html'):
-
-
+from django.urls import path
+from . import views
 from django.template.response import TemplateResponse
+from datetime import date
+import datetime
+from django.conf import settings
+from django.utils.timezone import make_aware
+
 
 def index(request, template_name="index.html"):
     args = {}
@@ -44,9 +45,6 @@ def read_from_mysql(request, template_name="index.html"):
      for measure in queryset:
         labels.append(measure.id)
         data.append(measure.distance)
-     
-     print(labels)
-     print(data)
 
      return TemplateResponse(request, template_name, {
         "myresult" : myresult,
@@ -55,6 +53,28 @@ def read_from_mysql(request, template_name="index.html"):
                                                      })
 
 def read_data(request):
-    text_res = "hello comanda executata"
-    print(text_res)
-    return render(request,"index.html",{'text_res': text_res})
+    today = date.today()
+    z1baudrate = 9600
+    z1port = '/dev/ttyUSB0'  # set the correct port before run it
+
+    z1serial = serial.Serial(port=z1port, baudrate=z1baudrate)
+    z1serial.timeout = 20 # set read timeout
+
+    z1serial.flushInput()
+    z1serial.flushOutput()
+    
+    if z1serial.is_open:
+        while True:
+            data_raw = z1serial.readline()
+            info = Info()
+            info.distance = data_raw.decode("utf-8")
+            #info.time = time.strftime('%Y-%m-%d %H:%M:%S')         
+            naive_datetime = datetime.datetime.now()
+            naive_datetime.tzinfo  # None
+            settings.TIME_ZONE  # 'UTC'
+            aware_datetime = make_aware(naive_datetime)
+            aware_datetime.tzinfo  # <UTC>
+            info.time = aware_datetime
+            info.save()
+
+

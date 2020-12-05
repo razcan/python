@@ -5,6 +5,11 @@ import time
 import mysql.connector
 from mysql.connector import errorcode
 from datetime import date
+from django.http import HttpResponse
+from django.shortcuts import render 
+from django.db import models
+#from chart.models import *
+from models import Info
 
 class MyAppConfig():
     today = date.today()
@@ -23,12 +28,16 @@ class MyAppConfig():
         password="vasilica",
         database="RZC"
         )
-
+ 
     mycursor = mydb.cursor()   
 
     if z1serial.is_open:
         while True:
-            #time.sleep(1)
+            info = Info()
+            info.distance = '999'
+            info.time = '2020-12-04 01:56:06.000000'
+            info.save()
+            #info_instance = Info.objects.create(distance='999',time='2020-12-04 01:56:06.000000')
             data_raw = z1serial.readline()
             timestamp = time.strftime('%Y-%m-%d %H:%M:%S')
             sql = "INSERT INTO chart_info (distance, time) VALUES (%s, %s)"
