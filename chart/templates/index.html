@@ -16,14 +16,16 @@
 
  {% csrf_token %}
 
-  <form action='read_data' method='GET'>
+
+  <form action='read' method='GET'>
     <button type='submit'> Start Reading</button>
   </form>
 
 
 <div class="container">
   <div class="jumbotron">
-    <h1 class="text-center p-3 mb-2 bg-info text-white">Distance Measure</h1>      
+    <h1 class="text-center p-3 mb-2 bg-info text-white">Distance Measure</h1>   
+    <p id="demo"></p>   
   </div> 
 {% comment %} <canvas id="myChart" width="200" height="200"></canvas>   {% endcomment %}
 
@@ -37,9 +39,7 @@
          <div class="col-md-6">
                 <table class="table">
                 <caption>Numeric values:</caption>
-                <thead<form action='actionUrl' method='GET'>
-<button type='submit'> sort me</button>
-</form>>
+                <thead                
                     <tr>
                     <th scope="col">Id</th>
                     <th scope="col">Distance</th>
@@ -63,8 +63,22 @@
 <div>
 
 {% block content %}
+
+{{ data_one }}
+
 <script>
-new Chart(document.getElementById("line-chart"), {
+var myVar = setInterval(myTimer, 1000);
+
+function myTimer() {
+  var d = new Date();
+  var t = d.toLocaleTimeString();
+  document.getElementById("demo").innerHTML = t;
+}
+</script>
+
+<script>
+var x = setInterval(
+  new Chart(document.getElementById("line-chart"), {
   type: 'line',
   data: {
     labels: {{ labels|safe }},
@@ -82,21 +96,79 @@ new Chart(document.getElementById("line-chart"), {
       text: 'Distance in time:'
     }
   }
+}), 1000);
+</script>
+
+<div style="width:50%;">
+  <canvas id="mycanvas"></canvas>
+</div>
+
+<script>
+
+// create initial empty chart
+var ctx_live = document.getElementById("mycanvas");
+var myChart = new Chart(ctx_live, {
+  type: 'bar',
+  data: {
+    labels: [],
+    datasets: [{
+      data: [],
+      borderWidth: 1,
+      borderColor:'#00c0ef',
+      label: 'liveCount',
+    }]
+  },
+  options: {
+    responsive: true,
+    title: {
+      display: true,
+      text: "Dynamically Update Chart",
+    },
+    legend: {
+      display: false
+    },
+    scales: {
+      yAxes: [{
+        ticks: {
+          beginAtZero: true,
+        }
+      }]
+    }
+  }
 });
+
+// this post id drives the example data
+var postId = 1;
+
+// logic to get new data
+var getData = function() {
+  $.ajax({
+    success: function(data) {
+      // process your data to pull out what you plan to use to update the chart
+      // e.g. new label and a new data point
+      
+      // add new label and data point to chart's underlying data structures
+      myChart.data.labels.push(postId++);
+      myChart.data.datasets[0].data.push({{ data_one|safe }});
+      myChart.update();
+    }
+  });
+};
+
+// get new data every 3 seconds
+setInterval(getData, 1000);
 </script>
 {% endblock %}
 
-{% comment %} 
+
 {% block includes %}
 
-{% for res in myresult %}
-    ID: {{ res.id }}
-    Distance: {{ res.distance }}
-    Time: {{ res.time }}
+{% for res in data_one %}
+    ID: {{ res }}
     <br>
 {% endfor %}
 
-{% endblock includes %} {% endcomment %}
+{% endblock includes %} 
 
 
 </body>

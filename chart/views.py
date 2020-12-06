@@ -42,6 +42,20 @@ def read_from_mysql(request, template_name="index.html"):
      data = []
      queryset = Info.objects.filter().order_by('-id')[:10]
      myresult = Info.objects.filter().order_by('-id')[:10]
+     
+ 
+     queryset_one = Info.objects.filter().order_by('-id')[:1]
+     for measure_one in queryset_one:
+       label_one = []
+       data_one = []
+       label_one = measure_one.id
+       data_one = measure_one.distance.replace(r"\r\n", r"\n")
+       
+    #    label_one.append(label_one)
+    #    data_one.append(data_one)
+       print(label_one)
+       print(data_one)
+       
      for measure in queryset:
         labels.append(measure.id)
         data.append(measure.distance)
@@ -50,6 +64,8 @@ def read_from_mysql(request, template_name="index.html"):
         "myresult" : myresult,
         "labels" : labels,
         "data": data,
+        "label_one": label_one,
+        "data_one": data_one, 
                                                      })
 
 def read_data(request):

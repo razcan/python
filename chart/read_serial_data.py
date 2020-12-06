@@ -33,10 +33,10 @@ class MyAppConfig():
 
     if z1serial.is_open:
         while True:
-            info = Info()
-            info.distance = '999'
-            info.time = '2020-12-04 01:56:06.000000'
-            info.save()
+            # info = Info()
+            # info.distance = '999'
+            # info.time = '2020-12-04 01:56:06.000000'
+            # info.save()
             #info_instance = Info.objects.create(distance='999',time='2020-12-04 01:56:06.000000')
             data_raw = z1serial.readline()
             timestamp = time.strftime('%Y-%m-%d %H:%M:%S')
