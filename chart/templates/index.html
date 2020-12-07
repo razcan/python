@@ -27,14 +27,14 @@
     <h1 class="text-center p-3 mb-2 bg-info text-white">Distance Measure</h1>   
     <p id="demo"></p>   
   </div> 
-{% comment %} <canvas id="myChart" width="200" height="200"></canvas>   {% endcomment %}
 
 </div>
 
 <div class="container">
     <div class="row">
         <div class="col-md-6">
-              <canvas id="line-chart" width="300" height="250"></canvas>
+              {% comment %} <canvas id="line-chart" width="300" height="250"></canvas> {% endcomment %}
+              <div><canvas id="mycanvas" width="300" height="250"></canvas></div>
         </div>
          <div class="col-md-6">
                 <table class="table">
@@ -77,13 +77,33 @@ function myTimer() {
 </script>
 
 {% comment %} <script>
-var x = setInterval(
-  new Chart(document.getElementById("line-chart"), {
+var postId = 1;
+
+function getData2() {
+$.getJSON('http://127.0.0.1:8080/home', function(data) {
+myObj = data;
+x = myObj.date;
+var n = x.search("{\\\"distance\\\": \\\"");
+n= n+14;
+var res = x.substring(n);
+var fin = res.substring(0,6);
+var rez = fin.replace("\"", "");
+var xxx = rez.replace("\\r","");
+var a = parseInt(xxx);
+console.log(a);
+myChart2.data.labels.push(postId++);
+myChart2.data.datasets[0].data.push(a);
+myChart2.update();
+
+return a;
+})};
+
+var myChart2 = new Chart(document.getElementById("line-chart"), {
   type: 'line',
   data: {
-    labels: {{ labels|safe }},
+    labels: [1,2],
     datasets: [{ 
-        data: {{ data|safe }},
+        data: [1,2],
         label: "Distance",
         borderColor: "#3e95cd",
         fill: false
@@ -96,7 +116,9 @@ var x = setInterval(
       text: 'Distance in time:'
     }
   }
-}), 1000);
+});
+
+setInterval(console.log("gigigigigi"), 1000);
 </script> {% endcomment %}
 
 <div style="width:50%;">
@@ -115,8 +137,12 @@ var res = x.substring(n);
 var fin = res.substring(0,6);
 var rez = fin.replace("\"", "");
 var xxx = rez.replace("\\r","");
-var a = parseInt(xxx)
-console.log(xxx);
+var a = parseInt(xxx);
+console.log(a);
+myChart.data.labels.push(postId++);
+myChart.data.datasets[0].data.push(a);
+myChart.update();
+
 return a;
 })};
 
@@ -139,7 +165,7 @@ var myChart = new Chart(ctx_live, {
     responsive: true,
     title: {
       display: true,
-      text: "Chart.js - Dynamically Update Chart Via Ajax Requests",
+      text: "Dynamically Update Chart Via Ajax Requests",
     },
     legend: {
       display: false
@@ -158,19 +184,10 @@ var myChart = new Chart(ctx_live, {
 var postId = 1;
 
 // logic to get new data
-var getData5 = function() {
-  $.ajax({
-    url: 'http://127.0.0.1:8080/home',
-    success: function(data) {
-      myChart.data.labels.push("Post " + postId++);
-      myChart.data.datasets[0].data.push(getData());
-      myChart.update();
-    }
-  });
-};
+
 
 // get new data every 3 seconds
-setInterval(getData, 10000);
+setInterval(getData, 1000);
 </script>
 {% endblock %}
 
