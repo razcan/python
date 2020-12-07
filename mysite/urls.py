@@ -4,6 +4,7 @@ from chart import views
 
 urlpatterns = [
     path('', include('chart.urls')),
+    path('get_data', include('chart.urls')),
     #path('chart/', include('chart.urls')), --daca dorim sa avem ruta cu ip/chart
     path('admin/', admin.site.urls),
 ]

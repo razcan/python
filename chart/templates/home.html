@@ -1,0 +1,9 @@
+{% comment %} {% block content %}
+  <h2>Orgs</h2>
+  <p>login <strong>{{ id }}</strong>, id is <strong>{{ distance }}</strong>si {{ time }}  </p>
+{% endblock %} {% endcomment %}
+
+
+<script>
+    var jsonObject = JSON.parse('{{ time_series_json_string | escapejs }}');
+</script>

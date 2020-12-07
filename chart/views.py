@@ -13,13 +13,37 @@ from datetime import date
 import datetime
 from django.conf import settings
 from django.utils.timezone import make_aware
-
+import requests
+from django.core import serializers
+from django.http import JsonResponse
 
 def index(request, template_name="index.html"):
     args = {}
     text = "hello world"
     args['mytext'] = "text"
     return TemplateResponse(request, template_name, args)
+
+# def home(request):
+#     response = requests.get('https://restcountries.eu/rest/v2/alpha/ro')
+#     tara = response.json()
+#     print(tara['name'])
+#     return render(request, 'home.html', {            
+#     "name": tara['name'],
+#     "region": tara['region'],
+#     "flag": tara['flag']
+#     })
+
+def home(request):
+    response = Info.objects.filter().order_by('-id')[:1]
+    date = serializers.serialize('json',response)
+    return JsonResponse({'date': date})
+
+    
+    # def posts(request):
+    #     posts = Post.objects.filter(published_at__isnull=False).order_by('-published_at')
+    # post_list = serializers.serialize('json', posts)
+    # return HttpResponse(post_list, content_type="text/json-comment-filtered")
+
 
 def read_from_mysql(request, template_name="index.html"):
     #  mydb = mysql.connector.connect(

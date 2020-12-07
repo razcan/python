@@ -76,7 +76,7 @@ function myTimer() {
 }
 </script>
 
-<script>
+{% comment %} <script>
 var x = setInterval(
   new Chart(document.getElementById("line-chart"), {
   type: 'line',
@@ -97,13 +97,30 @@ var x = setInterval(
     }
   }
 }), 1000);
-</script>
+</script> {% endcomment %}
 
 <div style="width:50%;">
   <canvas id="mycanvas"></canvas>
 </div>
 
 <script>
+
+function getData() {
+$.getJSON('http://127.0.0.1:8080/home', function(data) {
+myObj = data;
+x = myObj.date;
+var n = x.search("{\\\"distance\\\": \\\"");
+n= n+14;
+var res = x.substring(n);
+var fin = res.substring(0,6);
+var rez = fin.replace("\"", "");
+var xxx = rez.replace("\\r","");
+var a = parseInt(xxx)
+console.log(xxx);
+return a;
+})};
+
+
 
 // create initial empty chart
 var ctx_live = document.getElementById("mycanvas");
@@ -122,7 +139,7 @@ var myChart = new Chart(ctx_live, {
     responsive: true,
     title: {
       display: true,
-      text: "Dynamically Update Chart",
+      text: "Chart.js - Dynamically Update Chart Via Ajax Requests",
     },
     legend: {
       display: false
@@ -141,34 +158,23 @@ var myChart = new Chart(ctx_live, {
 var postId = 1;
 
 // logic to get new data
-var getData = function() {
+var getData5 = function() {
   $.ajax({
+    url: 'http://127.0.0.1:8080/home',
     success: function(data) {
-      // process your data to pull out what you plan to use to update the chart
-      // e.g. new label and a new data point
-      
-      // add new label and data point to chart's underlying data structures
-      myChart.data.labels.push(postId++);
-      myChart.data.datasets[0].data.push({{ data_one|safe }});
+      myChart.data.labels.push("Post " + postId++);
+      myChart.data.datasets[0].data.push(getData());
       myChart.update();
     }
   });
 };
 
 // get new data every 3 seconds
-setInterval(getData, 1000);
+setInterval(getData, 10000);
 </script>
 {% endblock %}
 
 
-{% block includes %}
-
-{% for res in data_one %}
-    ID: {{ res }}
-    <br>
-{% endfor %}
-
-{% endblock includes %} 
 
 
 </body>
